@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DayType {
+  STRENGTH
+  CARDIO
+  REST
+}
+
+enum SetType {
+  WARMUP
+  NORMAL
+  FAILURE
+}
+
+enum SessionStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Exercise {
+  id               String            @id @default(cuid())
+  name             String
+  primaryMuscles   String[]
+  secondaryMuscles String[]
+  equipment        String?
+  level            String?
+  instructions     String[]
+  images           String[]
+  isCustom         Boolean           @default(false)
+  routineExercises RoutineExercise[]
+  workoutSets      WorkoutSet[]
+}
+
+model Routine {
+  id       String       @id @default(cuid())
+  name     String
+  isActive Boolean      @default(false)
+  days     RoutineDay[]
+}
+
+model RoutineDay {
+  id        String            @id @default(cuid())
+  routine   Routine           @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  routineId String
+  weekday   Int // 0=CN … 6=T7
+  name      String
+  dayType   DayType
+  exercises RoutineExercise[]
+  sessions  WorkoutSession[]
+
+  @@unique([routineId, weekday])
+}
+
+model RoutineExercise {
+  id           String     @id @default(cuid())
+  routineDay   RoutineDay @relation(fields: [routineDayId], references: [id], onDelete: Cascade)
+  routineDayId String
+  exercise     Exercise   @relation(fields: [exerciseId], references: [id])
+  exerciseId   String
+  order        Int
+  targetSets   Int
+  targetReps   String // vd. "8-12"
+  restSeconds  Int        @default(90)
+  note         String?
+}
+
+model WorkoutSession {
+  id           String        @id @default(cuid())
+  date         DateTime      @default(now())
+  routineDay   RoutineDay?   @relation(fields: [routineDayId], references: [id], onDelete: SetNull)
+  routineDayId String?
+  status       SessionStatus @default(IN_PROGRESS)
+  note         String?
+  sets         WorkoutSet[]
+}
+
+model WorkoutSet {
+  id          String         @id @default(cuid())
+  session     WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId   String
+  exercise    Exercise       @relation(fields: [exerciseId], references: [id])
+  exerciseId  String
+  setNumber   Int
+  type        SetType        @default(NORMAL)
+  weightKg    Float?
+  reps        Int?
+  completedAt DateTime?
+
+  @@unique([sessionId, exerciseId, setNumber])
+}
+
+model MealPlan {
+  id             String  @id @default(cuid())
+  dayType        DayType @unique
+  targetCalories Int
+  proteinG       Int
+  carbsG         Int
+  fatG           Int
+  meals          Meal[]
+}
+
+model Meal {
+  id          String   @id @default(cuid())
+  mealPlan    MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  mealPlanId  String
+  order       Int
+  name        String
+  description String
+  calories    Int?
+}
