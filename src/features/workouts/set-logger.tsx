@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { saveSet } from "./actions";
+import { enqueuePending, loadPending, storePending } from "./pending";
 import { RestTimer } from "./rest-timer";
 
 export type ExercisePlan = {
@@ -52,9 +53,32 @@ export function SetLogger({ sessionId, plans }: { sessionId: string; plans: Exer
       const { isPR } = await saveSet(input);
       update(plan.exerciseId, idx, { pendingSync: false, isPR });
     } catch {
-      update(plan.exerciseId, idx, { pendingSync: true }); // giữ badge "chưa đồng bộ", retry ở Task 14
+      storePending(enqueuePending(loadPending(), input));
+      update(plan.exerciseId, idx, { pendingSync: true });
     }
   }
+
+  useEffect(() => {
+    async function flush() {
+      const queue = loadPending();
+      if (queue.length === 0) return;
+      const remaining: typeof queue = [];
+      for (const item of queue) {
+        try { await saveSet(item); } catch { remaining.push(item); }
+      }
+      storePending(remaining);
+      if (remaining.length === 0) {
+        setRowsByEx((prev) => {
+          const next = { ...prev };
+          for (const ex of Object.keys(next)) next[ex] = next[ex].map((r) => ({ ...r, pendingSync: false }));
+          return next;
+        });
+      }
+    }
+    const t = setInterval(flush, 15000);
+    window.addEventListener("online", flush);
+    return () => { clearInterval(t); window.removeEventListener("online", flush); };
+  }, [sessionId]);
 
   function addSet(exId: string) {
     setRowsByEx((prev) => ({ ...prev, [exId]: [...prev[exId], { type: "NORMAL", weight: "", reps: "", done: false, isPR: false, pendingSync: false }] }));
