@@ -19,5 +19,9 @@ export async function getTodayContext(now = new Date()) {
     where: { dayType },
     include: { meals: { orderBy: { order: "asc" } } },
   });
-  return { routine, day, dayType, mealPlan };
+  const inProgressSession = await db.workoutSession.findFirst({
+    where: { status: "IN_PROGRESS" },
+    orderBy: { date: "desc" },
+  });
+  return { routine, day, dayType, mealPlan, inProgressSession };
 }

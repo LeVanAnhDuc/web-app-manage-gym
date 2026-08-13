@@ -11,12 +11,24 @@ const BANNER = {
 } as const;
 
 export default async function TodayPage() {
-  const { routine, day, dayType, mealPlan } = await getTodayContext();
+  const { routine, day, dayType, mealPlan, inProgressSession } = await getTodayContext();
   const b = BANNER[dayType];
   return (
     <main className="p-5">
       <p className="text-xs font-medium text-muted">{formatDateVi(new Date())}</p>
       <h1 className="font-display text-3xl font-bold uppercase">Hôm nay</h1>
+
+      {inProgressSession && (
+        <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-brand bg-brand/10 p-4">
+          <p className="text-sm font-semibold text-brand">Bạn có buổi tập đang dở</p>
+          <Link
+            href={`/workouts/${inProgressSession.id}`}
+            className="rounded-xl bg-brand px-4 py-2.5 font-display text-sm font-bold uppercase tracking-widest text-white"
+          >
+            Tiếp tục buổi tập
+          </Link>
+        </div>
+      )}
 
       <div className="relative mt-4 flex items-center gap-3.5 overflow-hidden rounded-xl border border-line bg-panel p-4 pl-5">
         <span className={`absolute inset-y-0 left-0 w-1.5 ${b.rail}`} />
@@ -49,7 +61,7 @@ export default async function TodayPage() {
           </ul>
           <form action={startWorkout}>
             <input type="hidden" name="routineDayId" value={day.id} />
-            <button className="mt-3 w-full rounded-xl bg-brand py-3.5 font-display text-lg font-bold uppercase tracking-widest text-white">
+            <button className="mt-3 w-full rounded-xl border border-brand bg-transparent py-3.5 font-display text-lg font-bold uppercase tracking-widest text-brand">
               Bắt đầu tập
             </button>
           </form>

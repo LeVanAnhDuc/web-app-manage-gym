@@ -2,6 +2,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { requireOwner } from "@/lib/require-owner";
 
 export const createExerciseSchema = z.object({
   name: z.string().trim().min(1, "Tên bài tập không được để trống"),
@@ -12,6 +13,7 @@ export const createExerciseSchema = z.object({
 
 export async function createExercise(formData: FormData) {
   "use server";
+  await requireOwner();
   const parsed = createExerciseSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) redirect(`/exercises/new?error=${encodeURIComponent(parsed.error.issues[0].message)}`);
   const { name, primaryMuscle, equipment, instructions } = parsed.data;

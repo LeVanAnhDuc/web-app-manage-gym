@@ -46,6 +46,7 @@ export function SetLogger({ sessionId, plans }: { sessionId: string; plans: Exer
     const row = rowsByEx[plan.exerciseId][idx];
     const weightKg = row.weight === "" ? null : Number(row.weight.replace(",", "."));
     const reps = row.reps === "" ? null : Number(row.reps);
+    if ((weightKg !== null && Number.isNaN(weightKg)) || (reps !== null && Number.isNaN(reps))) return;
     update(plan.exerciseId, idx, { done: true, pendingSync: true });
     setRest({ seconds: plan.restSeconds, runId: Date.now(), label: plan.name });
     const input = { sessionId, exerciseId: plan.exerciseId, setNumber: idx + 1, type: row.type, weightKg, reps };

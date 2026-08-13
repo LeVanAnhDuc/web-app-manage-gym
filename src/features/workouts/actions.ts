@@ -3,10 +3,12 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { requireOwner } from "@/lib/require-owner";
 import { isNewPR } from "./logic";
 import { getHistoryMaxKg } from "./queries";
 
 export async function startWorkout(formData: FormData) {
+  await requireOwner();
   const routineDayId = z.string().min(1).nullable().parse(formData.get("routineDayId") || null);
   const session = await db.workoutSession.create({ data: { routineDayId } });
   redirect(`/workouts/${session.id}`);
@@ -23,6 +25,7 @@ const saveSetSchema = z.object({
 export type SaveSetInput = z.infer<typeof saveSetSchema>;
 
 export async function saveSet(input: SaveSetInput): Promise<{ isPR: boolean }> {
+  await requireOwner();
   const d = saveSetSchema.parse(input);
   const historyMax = await getHistoryMaxKg(d.exerciseId);
   await db.workoutSet.upsert({
@@ -35,6 +38,7 @@ export async function saveSet(input: SaveSetInput): Promise<{ isPR: boolean }> {
 }
 
 export async function finishWorkout(formData: FormData) {
+  await requireOwner();
   const id = z.string().min(1).parse(formData.get("sessionId"));
   await db.workoutSession.update({ where: { id }, data: { status: "COMPLETED" } });
   revalidatePath("/");
@@ -45,6 +49,7 @@ export async function finishWorkout(formData: FormData) {
 // Thêm bài ngoài kế hoạch giữa buổi tập: tạo set giữ chỗ (completedAt=null,
 // totalVolumeKg bỏ qua) để bài xuất hiện trong SetLogger; tick set 1 sẽ upsert đè lên.
 export async function addExerciseToSession(formData: FormData) {
+  await requireOwner();
   const sessionId = z.string().min(1).parse(formData.get("sessionId"));
   const exerciseId = z.string().min(1).parse(formData.get("exerciseId"));
   await db.workoutSet.upsert({

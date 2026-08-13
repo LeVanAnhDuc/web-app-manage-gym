@@ -3,11 +3,13 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { requireOwner } from "@/lib/require-owner";
 import { nextOrder } from "./builder";
 
 const nameSchema = z.string().trim().min(1).max(80);
 
 export async function createRoutine(formData: FormData) {
+  await requireOwner();
   const name = nameSchema.parse(formData.get("name"));
   const routine = await db.routine.create({ data: { name } });
   revalidatePath("/more/routines");
@@ -15,6 +17,7 @@ export async function createRoutine(formData: FormData) {
 }
 
 export async function setActiveRoutine(formData: FormData) {
+  await requireOwner();
   const id = z.string().min(1).parse(formData.get("id"));
   await db.$transaction([
     db.routine.updateMany({ data: { isActive: false } }),
@@ -25,6 +28,7 @@ export async function setActiveRoutine(formData: FormData) {
 }
 
 export async function deleteRoutine(formData: FormData) {
+  await requireOwner();
   const id = z.string().min(1).parse(formData.get("id"));
   await db.routine.delete({ where: { id } });
   revalidatePath("/more/routines");
@@ -39,12 +43,14 @@ const daySchema = z.object({
 });
 
 export async function addRoutineDay(formData: FormData) {
+  await requireOwner();
   const d = daySchema.parse(Object.fromEntries(formData));
   await db.routineDay.create({ data: d });
   revalidatePath(`/more/routines/${d.routineId}`);
 }
 
 export async function deleteRoutineDay(formData: FormData) {
+  await requireOwner();
   const id = z.string().min(1).parse(formData.get("id"));
   const day = await db.routineDay.delete({ where: { id } });
   revalidatePath(`/more/routines/${day.routineId}`);
@@ -60,6 +66,7 @@ const addExSchema = z.object({
 });
 
 export async function addExerciseToDay(formData: FormData) {
+  await requireOwner();
   const d = addExSchema.parse(Object.fromEntries(formData));
   const existing = await db.routineExercise.findMany({
     where: { routineDayId: d.routineDayId },
@@ -82,12 +89,14 @@ export async function addExerciseToDay(formData: FormData) {
 }
 
 export async function removeRoutineExercise(formData: FormData) {
+  await requireOwner();
   const id = z.string().min(1).parse(formData.get("id"));
   const re = await db.routineExercise.delete({ where: { id }, include: { routineDay: true } });
   revalidatePath(`/more/routines/${re.routineDay.routineId}`);
 }
 
 export async function moveRoutineExercise(formData: FormData) {
+  await requireOwner();
   const id = z.string().min(1).parse(formData.get("id"));
   const dir = z.enum(["up", "down"]).parse(formData.get("dir"));
   const re = await db.routineExercise.findUniqueOrThrow({ where: { id }, include: { routineDay: true } });

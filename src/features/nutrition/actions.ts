@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { requireOwner } from "@/lib/require-owner";
 
 const planSchema = z.object({
   id: z.string().min(1),
@@ -12,6 +13,7 @@ const planSchema = z.object({
 });
 
 export async function updateMealPlan(formData: FormData) {
+  await requireOwner();
   const { id, ...data } = planSchema.parse(Object.fromEntries(formData));
   await db.mealPlan.update({ where: { id }, data });
   revalidatePath("/nutrition");
@@ -26,6 +28,7 @@ const mealSchema = z.object({
 });
 
 export async function addMeal(formData: FormData) {
+  await requireOwner();
   const d = mealSchema.parse(Object.fromEntries(formData));
   const count = await db.meal.count({ where: { mealPlanId: d.mealPlanId } });
   await db.meal.create({ data: { ...d, calories: d.calories ?? null, order: count + 1 } });
@@ -34,6 +37,7 @@ export async function addMeal(formData: FormData) {
 }
 
 export async function deleteMeal(formData: FormData) {
+  await requireOwner();
   const id = z.string().min(1).parse(formData.get("id"));
   await db.meal.delete({ where: { id } });
   revalidatePath("/nutrition");

@@ -1,7 +1,8 @@
 import { signIn } from "@/auth";
 import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const { error } = await searchParams;
   async function login(formData: FormData) {
     "use server";
     try {
@@ -18,6 +19,11 @@ export default function LoginPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-4 p-6">
       <h1 className="font-display text-4xl font-bold uppercase">Gym của tôi</h1>
+      {error && (
+        <p className="rounded-lg bg-brand/10 px-3 py-2 text-sm text-brand">
+          Email hoặc mật khẩu không đúng — thử lại nhé.
+        </p>
+      )}
       <form action={login} className="flex flex-col gap-3">
         <input name="email" type="email" required placeholder="Email"
           className="rounded-xl border border-line bg-panel px-4 py-3" />
