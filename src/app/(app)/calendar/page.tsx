@@ -5,13 +5,19 @@ import { weekdayInTz } from "@/lib/date";
 import { WEEKDAY_LABELS, DAY_TYPE_LABELS } from "@/features/routines/builder";
 
 const DOT = { STRENGTH: "bg-brand", CARDIO: "bg-cardio", REST: "bg-line" } as const;
+const VN_OFFSET_MS = 7 * 3600 * 1000;
 
 export default async function CalendarPage() {
   const now = new Date();
   const days = weekDates(now);
   const routine = await db.routine.findFirst({ where: { isActive: true }, include: { days: true } });
   const sessions = await db.workoutSession.findMany({
-    where: { date: { gte: days[0], lt: new Date(days[6].getTime() + 86_400_000) } },
+    where: {
+      date: {
+        gte: new Date(days[0].getTime() - VN_OFFSET_MS),
+        lt: new Date(days[6].getTime() + 86_400_000 - VN_OFFSET_MS),
+      },
+    },
     orderBy: { date: "asc" },
   });
   const todayWd = weekdayInTz(now);
