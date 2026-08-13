@@ -61,14 +61,22 @@ const addExSchema = z.object({
 
 export async function addExerciseToDay(formData: FormData) {
   const d = addExSchema.parse(Object.fromEntries(formData));
-  const existing = await db.routineExercise.findMany({ where: { routineDayId: d.routineDayId }, select: { order: true } });
-  await db.routineExercise.create({
-    data: {
-      routineDayId: d.routineDayId, exerciseId: d.exerciseId, targetSets: d.targetSets,
-      targetReps: d.targetReps, restSeconds: d.restSeconds,
-      order: nextOrder(existing.map((e) => e.order)),
-    },
+  const existing = await db.routineExercise.findMany({
+    where: { routineDayId: d.routineDayId },
+    select: { order: true, exerciseId: true },
   });
+  // Chặn trùng bài trong cùng một ngày giáo án (SetLogger key theo exerciseId nên
+  // trùng sẽ đè set của nhau, mất dữ liệu âm thầm) — im lặng bỏ qua, redirect như thành công.
+  const isDuplicate = existing.some((e) => e.exerciseId === d.exerciseId);
+  if (!isDuplicate) {
+    await db.routineExercise.create({
+      data: {
+        routineDayId: d.routineDayId, exerciseId: d.exerciseId, targetSets: d.targetSets,
+        targetReps: d.targetReps, restSeconds: d.restSeconds,
+        order: nextOrder(existing.map((e) => e.order)),
+      },
+    });
+  }
   revalidatePath(`/more/routines/${d.routineId}`);
   redirect(`/more/routines/${d.routineId}`);
 }
