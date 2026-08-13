@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { saveSet } from "./actions";
 import { enqueuePending, loadPending, storePending } from "./pending";
 import { RestTimer } from "./rest-timer";
@@ -58,21 +58,37 @@ export function SetLogger({ sessionId, plans }: { sessionId: string; plans: Exer
     }
   }
 
+  const flushingRef = useRef(false);
   useEffect(() => {
     async function flush() {
-      const queue = loadPending();
-      if (queue.length === 0) return;
-      const remaining: typeof queue = [];
-      for (const item of queue) {
-        try { await saveSet(item); } catch { remaining.push(item); }
-      }
-      storePending(remaining);
-      if (remaining.length === 0) {
+      if (flushingRef.current) return;
+      flushingRef.current = true;
+      try {
+        const queue = loadPending();
+        if (queue.length === 0) return;
+        const succeeded: typeof queue = [];
+        for (const item of queue) {
+          try { await saveSet(item); succeeded.push(item); } catch { /* vẫn pending, giữ trong queue */ }
+        }
+        if (succeeded.length === 0) return;
+        // Merge với queue sống hiện tại (không ghi lại snapshot cũ) để không đè mất
+        // item mới do tick() enqueue trong lúc flush này đang chạy.
+        const live = loadPending();
+        const next = live.filter(
+          (l) => !succeeded.some((s) => s.sessionId === l.sessionId && s.exerciseId === l.exerciseId && s.setNumber === l.setNumber)
+        );
+        storePending(next);
         setRowsByEx((prev) => {
-          const next = { ...prev };
-          for (const ex of Object.keys(next)) next[ex] = next[ex].map((r) => ({ ...r, pendingSync: false }));
-          return next;
+          const copy = { ...prev };
+          for (const s of succeeded) {
+            const rows = copy[s.exerciseId];
+            const idx = s.setNumber - 1;
+            if (rows?.[idx]) copy[s.exerciseId] = rows.map((r, i) => (i === idx ? { ...r, pendingSync: false } : r));
+          }
+          return copy;
         });
+      } finally {
+        flushingRef.current = false;
       }
     }
     const t = setInterval(flush, 15000);

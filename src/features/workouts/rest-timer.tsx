@@ -10,7 +10,7 @@ export function RestTimer({ seconds, label, onClose }: { seconds: number; label:
   }, [left, onClose]);
   const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");
   const R = 26, C = 2 * Math.PI * R;
-  const progress = left / seconds; // 1 → 0
+  const progress = seconds > 0 ? left / seconds : 0; // 1 → 0
   return (
     <div className="fixed inset-x-0 bottom-16 z-20 mx-auto flex max-w-lg items-center gap-3 border-t border-line bg-panel px-5 py-3">
       <div className="relative size-14">
