@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hôm nay — Iron &amp; Chalk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14171C; --panel:#1B2027; --panel2:#222932; --line:#2B323C;
+  --ink:#E9E7E1; --muted:#8B95A3;
+  --red:#E2483D; --blue:#4A82D9; --yellow:#E8B93B; --green:#4C9E70;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0B0C0E;font-family:'Be Vietnam Pro',sans-serif;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;padding:32px 16px;min-height:100vh}
+.frame-label{font:600 12px/1 'Barlow Condensed';letter-spacing:.2em;color:#5A6472;text-transform:uppercase;margin-bottom:12px}
+.phone{width:390px;height:844px;background:var(--bg);border:1px solid var(--line);border-radius:28px;
+  overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.scroll{flex:1;overflow-y:auto;padding:20px 16px 12px}
+.scroll::-webkit-scrollbar{display:none}
+
+.eyebrow{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.04em}
+h1{font:700 34px/1 'Barlow Condensed';letter-spacing:.03em;text-transform:uppercase;margin-top:2px}
+
+/* day banner — plate rail signature */
+.day-banner{margin-top:16px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;
+  padding:14px 16px 14px 20px;position:relative;overflow:hidden;display:flex;align-items:center;gap:14px}
+.day-banner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--red)}
+.day-banner .plate{width:46px;height:46px;border-radius:50%;flex:none;
+  background:radial-gradient(circle at 50% 50%, var(--bg) 0 26%, var(--red) 27% 100%);
+  border:2px solid #B23328;box-shadow:inset 0 0 0 6px rgba(0,0,0,.22)}
+.day-banner .t{flex:1}
+.day-banner .kind{font:700 24px/1 'Barlow Condensed';letter-spacing:.06em;text-transform:uppercase}
+.day-banner .sub{font-size:12px;color:var(--muted);margin-top:3px}
+
+.card{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h2{font:600 14px/1 'Barlow Condensed';letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:baseline}
+.card h2 .meta{font-family:'Be Vietnam Pro';font-size:11px;font-weight:400;letter-spacing:0;text-transform:none}
+
+.ex{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.ex:last-of-type{border-bottom:0}
+.ex .n{flex:1}
+.ex .name{font-size:14px;font-weight:600}
+.ex .tag{font-size:11px;color:var(--muted);margin-top:1px}
+.ex .target{font:600 18px/1 'Barlow Condensed';letter-spacing:.04em;color:var(--ink);white-space:nowrap}
+.ex .target small{font-size:12px;color:var(--muted)}
+
+.cta{display:block;width:100%;margin-top:14px;padding:15px;border:0;border-radius:12px;background:var(--red);
+  color:#fff;font:700 20px/1 'Barlow Condensed';letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+
+.macros{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.m{background:var(--panel2);border-radius:10px;padding:10px 8px;text-align:center}
+.m b{display:block;font:700 22px/1 'Barlow Condensed';letter-spacing:.02em}
+.m span{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.meal{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.meal:last-child{border-bottom:0}
+.meal .k{font-weight:600;white-space:nowrap}
+.meal .d{color:var(--muted);flex:1;text-align:right}
+
+/* tab bar */
+.tabs{display:flex;border-top:1px solid var(--line);background:var(--panel);padding:10px 6px 14px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:10px;text-decoration:none}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="frame-label">01 · Hôm nay — bản tối (Iron &amp; Chalk)</div>
+<div class="phone">
+  <div class="scroll">
+    <div class="eyebrow">Thứ Tư · 13 tháng 8</div>
+    <h1>Hôm nay</h1>
+
+    <div class="day-banner">
+      <div class="plate"></div>
+      <div class="t">
+        <div class="kind">Ngày đẩy · Push A</div>
+        <div class="sub">Giáo án PPL 6 ngày · Tuần 3</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Buổi tập <span class="meta">5 bài · ~60 phút</span></h2>
+      <div class="ex"><div class="n"><div class="name">Barbell Bench Press</div><div class="tag">Ngực · Barbell</div></div><div class="target">4×8-12</div></div>
+      <div class="ex"><div class="n"><div class="name">Overhead Press</div><div class="tag">Vai · Barbell</div></div><div class="target">3×8-10</div></div>
+      <div class="ex"><div class="n"><div class="name">Incline Dumbbell Press</div><div class="tag">Ngực trên · Dumbbell</div></div><div class="target">3×10-12</div></div>
+      <div class="ex"><div class="n"><div class="name">Lateral Raise</div><div class="tag">Vai giữa · Dumbbell</div></div><div class="target">4×12-15</div></div>
+      <div class="ex"><div class="n"><div class="name">Triceps Pushdown</div><div class="tag">Tay sau · Cable</div></div><div class="target">3×10-12</div></div>
+      <button class="cta">Bắt đầu tập</button>
+    </div>
+
+    <div class="card">
+      <h2>Dinh dưỡng <span class="meta">kế hoạch ngày tập tạ</span></h2>
+      <div class="macros">
+        <div class="m"><b>2.800</b><span>kcal</span></div>
+        <div class="m"><b>180</b><span>protein g</span></div>
+        <div class="m"><b>320</b><span>carb g</span></div>
+        <div class="m"><b>80</b><span>fat g</span></div>
+      </div>
+      <div style="margin-top:6px">
+        <div class="meal"><span class="k">Bữa sáng</span><span class="d">Yến mạch, 3 trứng, chuối · ~650 kcal</span></div>
+        <div class="meal"><span class="k">Bữa trưa</span><span class="d">Cơm, ức gà 200g, rau · ~800 kcal</span></div>
+        <div class="meal"><span class="k">Trước tập</span><span class="d">Sữa chua Hy Lạp, granola · ~350 kcal</span></div>
+        <div class="meal"><span class="k">Bữa tối</span><span class="d">Bò 150g, khoai lang, salad · ~750 kcal</span></div>
+        <div class="meal"><span class="k">Bữa phụ</span><span class="d">Whey 1 scoop, hạt · ~250 kcal</span></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <a class="tab on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Hôm nay</a>
+    <a class="tab"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>Lịch</a>
+    <a class="tab"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg>Bài tập</a>
+    <a class="tab"><svg viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 0 1-16 0zM9 7c0-2 1.5-2 1.5-4M14 7c0-2 1.5-2 1.5-4"/></svg>Dinh dưỡng</a>
+    <a class="tab"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>Thêm</a>
+  </nav>
+</div>
+</body>
+</html>

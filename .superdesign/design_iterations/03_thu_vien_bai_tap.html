@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thư viện bài tập — Iron &amp; Chalk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EFEDE7; --panel:#FFFFFF; --panel2:#F4F2EC; --line:#DCD8CF;
+  --ink:#1D2127; --muted:#6E7681;
+  --red:#CC3A30; --blue:#3A6FC4; --yellow:#C99A22; --green:#3E8A5F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#DEDBD3;font-family:'Be Vietnam Pro',sans-serif;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;padding:32px 16px;min-height:100vh}
+.frame-label{font:600 12px/1 'Barlow Condensed';letter-spacing:.2em;color:#8B8578;text-transform:uppercase;margin-bottom:12px}
+.phone{width:390px;height:844px;background:var(--bg);border:1px solid var(--line);border-radius:28px;
+  overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(60,55,45,.25)}
+.scroll{flex:1;overflow-y:auto;padding:20px 16px 12px}
+.scroll::-webkit-scrollbar{display:none}
+
+h1{font:700 34px/1 'Barlow Condensed';letter-spacing:.03em;text-transform:uppercase}
+.count{font-size:12px;color:var(--muted);margin-top:2px}
+
+.search{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--panel);
+  border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--muted);font-size:14px}
+.search svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+.flabel{font:600 12px/1 'Barlow Condensed';letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font-size:12px;font-weight:600;padding:8px 14px;border-radius:99px;
+  border:1px solid var(--line);background:var(--panel);color:var(--muted)}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+
+.item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.thumb{width:52px;height:52px;flex:none;border-radius:12px;background:var(--panel2);border:1px solid var(--line);
+  display:grid;place-items:center;font:700 20px/1 'Barlow Condensed';color:#ADA795}
+.item .t{flex:1;min-width:0}
+.item .name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .tags{font-size:11px;color:var(--muted);margin-top:2px}
+.item .last{font-size:10px;color:#A9ADB3;margin-top:2px}
+.item .arr{color:#B3ADA1}
+.item .prbadge{font:700 12px/1 'Barlow Condensed';letter-spacing:.06em;color:var(--yellow);white-space:nowrap}
+
+.fab{position:relative;margin:12px 0 6px;width:100%;padding:13px;border-radius:12px;border:1px dashed var(--line);
+  background:none;color:var(--muted);font-size:13px;font-weight:600}
+
+.tabs{display:flex;border-top:1px solid var(--line);background:var(--panel);padding:10px 6px 14px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:10px;text-decoration:none}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="frame-label">03 · Thư viện bài tập — search + filter</div>
+<div class="phone">
+  <div class="scroll">
+    <h1>Bài tập</h1>
+    <div class="count">832 bài · nguồn free-exercise-db + 3 bài tùy chỉnh</div>
+
+    <div class="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      Tìm theo tên… (vd. bench press)
+    </div>
+
+    <div class="flabel">Nhóm cơ</div>
+    <div class="chips">
+      <div class="chip">Tất cả</div><div class="chip on">Ngực</div><div class="chip">Lưng</div>
+      <div class="chip">Vai</div><div class="chip">Chân</div><div class="chip">Tay trước</div><div class="chip">Tay sau</div><div class="chip">Bụng</div>
+    </div>
+    <div class="flabel">Dụng cụ</div>
+    <div class="chips">
+      <div class="chip">Tất cả</div><div class="chip on">Barbell</div><div class="chip">Dumbbell</div>
+      <div class="chip">Cable</div><div class="chip">Máy</div><div class="chip">Bodyweight</div>
+    </div>
+
+    <div style="margin-top:6px">
+      <div class="item">
+        <div class="thumb">BP</div>
+        <div class="t">
+          <div class="name">Barbell Bench Press</div>
+          <div class="tags">Ngực · Tay sau, vai trước · Trung cấp</div>
+          <div class="last">Tập gần nhất: hôm nay</div>
+        </div>
+        <div class="prbadge">PR 85kg</div>
+        <div class="arr">›</div>
+      </div>
+      <div class="item">
+        <div class="thumb">IP</div>
+        <div class="t">
+          <div class="name">Incline Barbell Bench Press</div>
+          <div class="tags">Ngực trên · Vai trước · Trung cấp</div>
+          <div class="last">Tập gần nhất: 4 ngày trước</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
+      <div class="item">
+        <div class="thumb">CP</div>
+        <div class="t">
+          <div class="name">Close-Grip Bench Press</div>
+          <div class="tags">Tay sau · Ngực · Trung cấp</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
+      <div class="item">
+        <div class="thumb">FP</div>
+        <div class="t">
+          <div class="name">Barbell Floor Press</div>
+          <div class="tags">Ngực · Tay sau · Cơ bản</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
+      <div class="item">
+        <div class="thumb">GP</div>
+        <div class="t">
+          <div class="name">Barbell Guillotine Bench Press</div>
+          <div class="tags">Ngực trên · Nâng cao</div>
+        </div>
+        <div class="arr">›</div>
+      </div>
+    </div>
+
+    <button class="fab">+ Tạo bài tập tùy chỉnh</button>
+  </div>
+
+  <nav class="tabs">
+    <a class="tab"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Hôm nay</a>
+    <a class="tab"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>Lịch</a>
+    <a class="tab on"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3 9v6M21 9v6M6.5 12h11"/></svg>Bài tập</a>
+    <a class="tab"><svg viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 0 1-16 0zM9 7c0-2 1.5-2 1.5-4M14 7c0-2 1.5-2 1.5-4"/></svg>Dinh dưỡng</a>
+    <a class="tab"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>Thêm</a>
+  </nav>
+</div>
+</body>
+</html>

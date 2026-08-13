@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log buổi tập — Iron &amp; Chalk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EFEDE7; --panel:#FFFFFF; --panel2:#F4F2EC; --line:#DCD8CF;
+  --ink:#1D2127; --muted:#6E7681;
+  --red:#CC3A30; --blue:#3A6FC4; --yellow:#C99A22; --green:#3E8A5F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#DEDBD3;font-family:'Be Vietnam Pro',sans-serif;color:var(--ink);
+  display:flex;flex-direction:column;align-items:center;padding:32px 16px;min-height:100vh}
+.frame-label{font:600 12px/1 'Barlow Condensed';letter-spacing:.2em;color:#8B8578;text-transform:uppercase;margin-bottom:12px}
+.phone{width:390px;height:844px;background:var(--bg);border:1px solid var(--line);border-radius:28px;
+  overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(60,55,45,.25)}
+
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.topbar .back{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.topbar .t{flex:1}
+.topbar .name{font:700 22px/1 'Barlow Condensed';letter-spacing:.08em;text-transform:uppercase}
+.topbar .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.chip{font:600 16px/1 'Barlow Condensed';letter-spacing:.06em;background:var(--panel2);border:1px solid var(--line);
+  border-radius:99px;padding:8px 12px;color:var(--yellow)}
+
+.scroll{flex:1;overflow-y:auto;padding:14px 16px}
+.scroll::-webkit-scrollbar{display:none}
+
+.exblock{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 14px 10px;margin-bottom:12px}
+.exblock header{display:flex;align-items:baseline;gap:8px}
+.exblock .name{font-size:15px;font-weight:700;flex:1}
+.exblock .prev{font-size:11px;color:var(--muted)}
+.exblock.done{opacity:.55}
+.exblock.done .sum{font-size:12px;color:var(--green);font-weight:600}
+
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th{font:600 12px/1 'Barlow Condensed';letter-spacing:.16em;color:var(--muted);text-transform:uppercase;
+  text-align:center;padding:6px 2px;border-bottom:1px solid var(--line)}
+td{text-align:center;padding:7px 2px;border-bottom:1px solid var(--line);font-size:14px}
+tr:last-child td{border-bottom:0}
+td.set{font:700 16px/1 'Barlow Condensed';color:var(--muted);width:36px}
+td.prevv{color:#A9ADB3;font-size:12px;width:74px}
+td .in{display:inline-block;width:64px;padding:8px 0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;
+  color:var(--ink);text-align:center;font:600 17px/1 'Barlow Condensed';letter-spacing:.04em}
+td .in.cur{border-color:var(--red);background:#FBEEEC}
+td.ok{width:44px}
+.tick{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);color:transparent}
+.tick.did{background:var(--green);border-color:var(--green);color:#fff}
+.tick.pr{background:var(--yellow);border-color:var(--yellow);color:#231A05;
+  font:700 11px/1 'Barlow Condensed';letter-spacing:.05em}
+tr.warm td{opacity:.6}
+tr.warm td.set{color:var(--yellow)}
+.addset{width:100%;margin-top:8px;padding:9px;border-radius:9px;border:1px dashed var(--line);
+  background:none;color:var(--muted);font-size:12px;font-weight:600}
+
+.next{font-size:12px;color:var(--muted);text-align:center;padding:6px 0 2px}
+.next b{color:var(--ink)}
+.finish{display:block;width:100%;margin-top:10px;padding:14px;border-radius:12px;border:1px solid var(--red);
+  background:none;color:var(--red);font:700 18px/1 'Barlow Condensed';letter-spacing:.14em;text-transform:uppercase}
+
+/* rest timer — depleting plate */
+.rest{display:flex;align-items:center;gap:14px;border-top:1px solid var(--line);background:var(--panel);padding:12px 16px 16px}
+.dial{position:relative;width:58px;height:58px;flex:none}
+.dial svg{transform:rotate(-90deg)}
+.dial .base{stroke:var(--line)}
+.dial .prog{stroke:var(--yellow);stroke-dasharray:163;stroke-dashoffset:48;stroke-linecap:round}
+.dial .hole{position:absolute;inset:0;display:grid;place-items:center}
+.dial .hole i{width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--line);display:block}
+.rest .t{flex:1}
+.rest .time{font:700 30px/1 'Barlow Condensed';letter-spacing:.05em}
+.rest .lbl{font-size:11px;color:var(--muted)}
+.rest button{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);
+  color:var(--ink);font-size:12px;font-weight:600}
+.rest button.skip{color:var(--muted);background:none}
+</style>
+</head>
+<body>
+<div class="frame-label">02 · Log buổi tập — màn hình quan trọng nhất</div>
+<div class="phone">
+  <div class="topbar">
+    <div class="back">‹</div>
+    <div class="t">
+      <div class="name">Push A</div>
+      <div class="sub">Bài 2/5 · 12 set đã xong</div>
+    </div>
+    <div class="chip">24:36</div>
+  </div>
+
+  <div class="scroll">
+    <div class="exblock done">
+      <header><div class="name">Barbell Bench Press</div><div class="sum">✓ 4 set · 2.560 kg</div></header>
+    </div>
+
+    <div class="exblock">
+      <header>
+        <div class="name">Overhead Press</div>
+        <div class="prev">Buổi trước: 47,5 kg × 10</div>
+      </header>
+      <table>
+        <tr><th>Set</th><th>Trước</th><th>Kg</th><th>Rep</th><th></th></tr>
+        <tr class="warm">
+          <td class="set">W</td><td class="prevv">20×12</td>
+          <td><span class="in">20</span></td><td><span class="in">12</span></td>
+          <td class="ok"><span class="tick did">✓</span></td>
+        </tr>
+        <tr>
+          <td class="set">1</td><td class="prevv">47,5×10</td>
+          <td><span class="in">50</span></td><td><span class="in">10</span></td>
+          <td class="ok"><span class="tick pr">PR</span></td>
+        </tr>
+        <tr>
+          <td class="set">2</td><td class="prevv">47,5×9</td>
+          <td><span class="in cur">50</span></td><td><span class="in cur">&nbsp;</span></td>
+          <td class="ok"><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td class="set">3</td><td class="prevv">47,5×8</td>
+          <td><span class="in">&nbsp;</span></td><td><span class="in">&nbsp;</span></td>
+          <td class="ok"><span class="tick">✓</span></td>
+        </tr>
+      </table>
+      <button class="addset">+ Thêm set</button>
+    </div>
+
+    <div class="next">Tiếp theo · <b>Incline Dumbbell Press</b> 3×10-12</div>
+    <button class="finish">Hoàn thành buổi tập</button>
+  </div>
+
+  <div class="rest">
+    <div class="dial">
+      <svg width="58" height="58" viewBox="0 0 58 58">
+        <circle class="base" cx="29" cy="29" r="26" fill="none" stroke-width="5"/>
+        <circle class="prog" cx="29" cy="29" r="26" fill="none" stroke-width="5"/>
+      </svg>
+      <div class="hole"><i></i></div>
+    </div>
+    <div class="t">
+      <div class="time">1:24</div>
+      <div class="lbl">Nghỉ giữa set · Overhead Press</div>
+    </div>
+    <button>+30s</button>
+    <button class="skip">Bỏ qua</button>
+  </div>
+</div>
+</body>
+</html>
