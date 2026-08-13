@@ -3,6 +3,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { nextOrder } from "./builder";
 
 const nameSchema = z.string().trim().min(1).max(80);
 
@@ -28,4 +29,69 @@ export async function deleteRoutine(formData: FormData) {
   await db.routine.delete({ where: { id } });
   revalidatePath("/more/routines");
   revalidatePath("/");
+}
+
+const daySchema = z.object({
+  routineId: z.string().min(1),
+  weekday: z.coerce.number().int().min(0).max(6),
+  name: z.string().trim().min(1).max(60),
+  dayType: z.enum(["STRENGTH", "CARDIO", "REST"]),
+});
+
+export async function addRoutineDay(formData: FormData) {
+  const d = daySchema.parse(Object.fromEntries(formData));
+  await db.routineDay.create({ data: d });
+  revalidatePath(`/more/routines/${d.routineId}`);
+}
+
+export async function deleteRoutineDay(formData: FormData) {
+  const id = z.string().min(1).parse(formData.get("id"));
+  const day = await db.routineDay.delete({ where: { id } });
+  revalidatePath(`/more/routines/${day.routineId}`);
+}
+
+const addExSchema = z.object({
+  routineId: z.string().min(1),
+  routineDayId: z.string().min(1),
+  exerciseId: z.string().min(1),
+  targetSets: z.coerce.number().int().min(1).max(20),
+  targetReps: z.string().trim().min(1).max(20),
+  restSeconds: z.coerce.number().int().min(0).max(600),
+});
+
+export async function addExerciseToDay(formData: FormData) {
+  const d = addExSchema.parse(Object.fromEntries(formData));
+  const existing = await db.routineExercise.findMany({ where: { routineDayId: d.routineDayId }, select: { order: true } });
+  await db.routineExercise.create({
+    data: {
+      routineDayId: d.routineDayId, exerciseId: d.exerciseId, targetSets: d.targetSets,
+      targetReps: d.targetReps, restSeconds: d.restSeconds,
+      order: nextOrder(existing.map((e) => e.order)),
+    },
+  });
+  revalidatePath(`/more/routines/${d.routineId}`);
+  redirect(`/more/routines/${d.routineId}`);
+}
+
+export async function removeRoutineExercise(formData: FormData) {
+  const id = z.string().min(1).parse(formData.get("id"));
+  const re = await db.routineExercise.delete({ where: { id }, include: { routineDay: true } });
+  revalidatePath(`/more/routines/${re.routineDay.routineId}`);
+}
+
+export async function moveRoutineExercise(formData: FormData) {
+  const id = z.string().min(1).parse(formData.get("id"));
+  const dir = z.enum(["up", "down"]).parse(formData.get("dir"));
+  const re = await db.routineExercise.findUniqueOrThrow({ where: { id }, include: { routineDay: true } });
+  const neighbor = await db.routineExercise.findFirst({
+    where: { routineDayId: re.routineDayId, order: dir === "up" ? { lt: re.order } : { gt: re.order } },
+    orderBy: { order: dir === "up" ? "desc" : "asc" },
+  });
+  if (neighbor) {
+    await db.$transaction([
+      db.routineExercise.update({ where: { id: re.id }, data: { order: neighbor.order } }),
+      db.routineExercise.update({ where: { id: neighbor.id }, data: { order: re.order } }),
+    ]);
+  }
+  revalidatePath(`/more/routines/${re.routineDay.routineId}`);
 }
