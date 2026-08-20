@@ -50,6 +50,7 @@ next-env.d.ts
 .agents/
 .claude/
 .windsurf/
-AGENTS.md
-CLAUDE.md
 skills-lock.json
+
+# AGENTS.md and CLAUDE.md are committed on purpose: they carry repo conventions
+# (the README-must-follow-features rule), which have to travel with the repo.
