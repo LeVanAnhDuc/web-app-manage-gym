@@ -61,7 +61,7 @@ e2e/smoke.spec.ts
 - [ ] **Step 1: Scaffold** (thư mục hiện tại không rỗng nên scaffold vào thư mục con rồi copy ra)
 
 ```bash
-npx create-next-app@latest scaffold --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-npm --yes
+pnpm dlx create-next-app@latest scaffold --typescript --tailwind --eslint --app --src-dir --import-alias "@/*" --use-pnpm --yes
 cp -a scaffold/. .
 rm -rf scaffold
 printf '\n.env\n' >> .gitignore
@@ -138,7 +138,7 @@ export default function Page() {
 
 - [ ] **Step 4: Verify**
 
-Run: `npm run build`
+Run: `pnpm build`
 Expected: build thành công, không lỗi TS.
 
 - [ ] **Step 5: Commit**
@@ -160,8 +160,8 @@ git add -A && git commit -m "feat: scaffold Next.js + theme Chalk + fonts tiến
 - [ ] **Step 1: Cài Prisma**
 
 ```bash
-npm i @prisma/client && npm i -D prisma tsx
-npx prisma init
+pnpm add @prisma/client && pnpm add -D prisma tsx
+pnpm exec prisma init
 ```
 
 - [ ] **Step 2: Schema** — thay toàn bộ `prisma/schema.prisma`:
@@ -275,7 +275,7 @@ model Meal {
   - Local Docker: `docker run --name gym-pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16` rồi `DATABASE_URL="postgresql://postgres:postgres@localhost:5432/gym"`
   - Hoặc Neon free tier: người dùng tạo project tại neon.tech và dán connection string.
 
-Run: `npx prisma migrate dev --name init`
+Run: `pnpm exec prisma migrate dev --name init`
 Expected: migration tạo thành công, generate client.
 
 - [ ] **Step 4: Prisma singleton** — `src/lib/db.ts`:
@@ -288,7 +288,7 @@ export const db = globalForPrisma.prisma ?? new PrismaClient();
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 ```
 
-Run: `npx tsc --noEmit`
+Run: `pnpm exec tsc --noEmit`
 Expected: pass.
 
 - [ ] **Step 5: Commit**
@@ -308,7 +308,7 @@ git add -A && git commit -m "feat: Prisma schema + kết nối Postgres"
 **Interfaces:**
 - Produces: `toExerciseData(raw: RawExercise)` trả object khớp model Exercise; DB có ≥800 Exercise và đúng 3 MealPlan (STRENGTH/CARDIO/REST).
 
-- [ ] **Step 1: Cài Vitest** — `npm i -D vitest`; tạo `vitest.config.ts`:
+- [ ] **Step 1: Cài Vitest** — `pnpm add -D vitest`; tạo `vitest.config.ts`:
 
 ```ts
 import { defineConfig } from "vitest/config";
@@ -357,7 +357,7 @@ describe("toExerciseData", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL (module `./parse` chưa tồn tại).
+Run: `pnpm test` — Expected: FAIL (module `./parse` chưa tồn tại).
 
 - [ ] **Step 3: Implement** — `src/features/exercises/parse.ts`:
 
@@ -389,7 +389,7 @@ export function toExerciseData(raw: RawExercise) {
 }
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 4: Seed script** — `prisma/seed.ts`:
 
@@ -429,10 +429,10 @@ Thêm vào `package.json` (top-level): `"prisma": { "seed": "tsx prisma/seed.ts"
 
 - [ ] **Step 5: Chạy seed + verify + commit**
 
-Run: `npx prisma db seed`
+Run: `pnpm exec prisma db seed`
 Expected: in "Đã seed 8xx bài tập." và "Meal plan mặc định sẵn sàng."
 
-Run: `npx tsx -e "import {PrismaClient} from '@prisma/client'; const p=new PrismaClient(); p.exercise.count().then(c=>{console.log('exercises:',c); return p.mealPlan.count()}).then(m=>{console.log('mealplans:',m); process.exit(0)})"`
+Run: `pnpm exec tsx -e "import {PrismaClient} from '@prisma/client'; const p=new PrismaClient(); p.exercise.count().then(c=>{console.log('exercises:',c); return p.mealPlan.count()}).then(m=>{console.log('mealplans:',m); process.exit(0)})"`
 Expected: `exercises: >=800`, `mealplans: 3`.
 
 ```bash
@@ -453,8 +453,8 @@ git add -A && git commit -m "feat: seed free-exercise-db + meal plan mặc đị
 - [ ] **Step 1: Cài + env**
 
 ```bash
-npm i next-auth@beta
-npx auth secret   # tự thêm AUTH_SECRET vào .env
+pnpm add next-auth@beta
+pnpm dlx auth secret   # tự thêm AUTH_SECRET vào .env
 ```
 
 Thêm vào `.env`: `APP_EMAIL="claudeai.fe@citynow.vn"` và `APP_PASSWORD="<người dùng tự đặt>"` (hỏi người dùng giá trị, không bịa).
@@ -540,8 +540,8 @@ export default function LoginPage() {
 
 - [ ] **Step 4: Verify**
 
-Run: `npm run build`
-Expected: pass. Chạy `npm run dev` nền, `curl -s -o /dev/null -w "%{http_code} %{redirect_url}" http://localhost:3000/` — Expected: 307 redirect về `/login`.
+Run: `pnpm build`
+Expected: pass. Chạy `pnpm dev` nền, `curl -s -o /dev/null -w "%{http_code} %{redirect_url}" http://localhost:3000/` — Expected: 307 redirect về `/login`.
 
 - [ ] **Step 5: Commit**
 
@@ -563,7 +563,7 @@ git add -A && git commit -m "feat: đăng nhập một tài khoản với Auth.j
 - [ ] **Step 1: Icons + TabBar**
 
 ```bash
-npm i lucide-react
+pnpm add lucide-react
 ```
 
 `src/components/tab-bar.tsx`:
@@ -628,7 +628,7 @@ export default function Page() {
 
 - [ ] **Step 3: Verify + commit**
 
-Run: `npm run build` — Expected: pass, 5 route xuất hiện.
+Run: `pnpm build` — Expected: pass, 5 route xuất hiện.
 
 ```bash
 git add -A && git commit -m "feat: app shell với bottom tab bar 5 mục"
@@ -666,7 +666,7 @@ describe("buildExerciseWhere", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement queries** — `src/features/exercises/queries.ts`:
 
@@ -701,7 +701,7 @@ export const EQUIPMENT_OPTIONS = ["barbell", "dumbbell", "cable", "machine", "bo
 export function muscleLabel(m: string) { return MUSCLE_LABELS[m] ?? m; }
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Trang danh sách** — thay `src/app/(app)/exercises/page.tsx`:
 
@@ -805,7 +805,7 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
 
 - [ ] **Step 5: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS cả hai.
+Run: `pnpm test && pnpm build` — Expected: PASS cả hai.
 
 ```bash
 git add -A && git commit -m "feat: thư viện bài tập với search, filter nhóm cơ/dụng cụ, trang chi tiết"
@@ -824,7 +824,7 @@ git add -A && git commit -m "feat: thư viện bài tập với search, filter n
 - [ ] **Step 1: Cài Zod + failing test**
 
 ```bash
-npm i zod
+pnpm add zod
 ```
 
 `src/features/exercises/actions.test.ts`:
@@ -844,7 +844,7 @@ describe("createExerciseSchema", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement action** — `src/features/exercises/actions.ts`:
 
@@ -882,7 +882,7 @@ export async function createExercise(formData: FormData) {
 
 (Lưu ý: file có `"use server"` chỉ được export async function — tách schema sang cuối file không được; giải pháp: bỏ `"use server"` đầu file, thêm `"use server"` inline trong thân `createExercise`. Executor làm theo cách inline này.)
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Form page** — `src/app/(app)/exercises/new/page.tsx`:
 
@@ -917,7 +917,7 @@ export default async function NewExercisePage({ searchParams }: { searchParams: 
 
 - [ ] **Step 4: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: tạo bài tập tùy chỉnh"
@@ -1041,7 +1041,7 @@ export default function MorePage() {
 
 - [ ] **Step 4: Verify + commit**
 
-Run: `npm run build` — Expected: pass.
+Run: `pnpm build` — Expected: pass.
 
 ```bash
 git add -A && git commit -m "feat: quản lý giáo án — tạo, kích hoạt, xóa"
@@ -1071,7 +1071,7 @@ describe("nextOrder", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement helper** — `src/features/routines/builder.ts`:
 
@@ -1083,7 +1083,7 @@ export const WEEKDAY_LABELS = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", 
 export const DAY_TYPE_LABELS = { STRENGTH: "Tập tạ", CARDIO: "Cardio", REST: "Nghỉ" } as const;
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Actions mới** — thêm vào `src/features/routines/actions.ts` (kèm import mới ở đầu file: `import { nextOrder } from "./builder";`):
 
@@ -1271,7 +1271,7 @@ export default async function AddExercisePage({ params, searchParams }: {
 
 - [ ] **Step 6: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: builder giáo án — thêm ngày, thêm bài, sắp thứ tự"
@@ -1305,7 +1305,7 @@ describe("macros", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement** — `src/features/nutrition/macros.ts`:
 
@@ -1320,7 +1320,7 @@ export function macroPercents(proteinG: number, carbsG: number, fatG: number) {
 }
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Actions** — `src/features/nutrition/actions.ts`:
 
@@ -1452,7 +1452,7 @@ export default async function NutritionPage({ searchParams }: { searchParams: Pr
 
 - [ ] **Step 5: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: trang dinh dưỡng — macro và thực đơn theo loại ngày"
@@ -1487,7 +1487,7 @@ describe("weekdayInTz", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement** — `src/lib/date.ts`:
 
@@ -1504,7 +1504,7 @@ export function formatDateVi(date: Date, timeZone = "Asia/Ho_Chi_Minh"): string 
 }
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Query** — `src/features/dashboard/queries.ts`:
 
@@ -1640,7 +1640,7 @@ export async function startWorkout(formData: FormData) {
 
 - [ ] **Step 5: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: trang Hôm nay — buổi tập + kế hoạch ăn theo loại ngày"
@@ -1689,7 +1689,7 @@ describe("isNewPR", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement logic** — `src/features/workouts/logic.ts`:
 
@@ -1710,7 +1710,7 @@ export function isNewPR(weightKg: number, reps: number, historyMaxKg: number | n
 }
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Queries** — `src/features/workouts/queries.ts`:
 
@@ -1809,7 +1809,7 @@ export async function addExerciseToSession(formData: FormData) {
 
 - [ ] **Step 5: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: logic workout (volume, PR) + actions start/save/finish"
@@ -2144,7 +2144,7 @@ export function RestTimer({ seconds, label, onClose }: { seconds: number; label:
 
 - [ ] **Step 5: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: màn hình log buổi tập — set table, prev values, PR badge, thêm bài ngoài kế hoạch, tóm tắt"
@@ -2183,7 +2183,7 @@ describe("enqueuePending", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement** — `src/features/workouts/pending.ts`:
 
@@ -2208,7 +2208,7 @@ export function storePending(queue: SaveSetInput[]) {
 }
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Nối vào SetLogger** — sửa hàm `tick` trong `set-logger.tsx`: khi `saveSet` throw, đưa input vào queue và lưu localStorage; thêm effect flush:
 
@@ -2266,7 +2266,7 @@ const progress = left / seconds; // 1 → 0
 
 - [ ] **Step 5: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: rest timer bánh tạ + hàng đợi offline retry cho set"
@@ -2301,7 +2301,7 @@ describe("weekDates", () => {
 });
 ```
 
-Run: `npm test` — Expected: FAIL.
+Run: `pnpm test` — Expected: FAIL.
 
 - [ ] **Step 2: Implement** — `src/lib/week.ts`:
 
@@ -2321,7 +2321,7 @@ export function weekDates(now: Date): Date[] {
 }
 ```
 
-Run: `npm test` — Expected: PASS.
+Run: `pnpm test` — Expected: PASS.
 
 - [ ] **Step 3: Trang Lịch** — thay `src/app/(app)/calendar/page.tsx`:
 
@@ -2379,7 +2379,7 @@ export default async function CalendarPage() {
 
 - [ ] **Step 4: Verify + commit**
 
-Run: `npm test && npm run build` — Expected: PASS.
+Run: `pnpm test && pnpm build` — Expected: PASS.
 
 ```bash
 git add -A && git commit -m "feat: lịch tuần với trạng thái hoàn thành và link xem lại"
@@ -2428,8 +2428,8 @@ export default function manifest(): MetadataRoute.Manifest {
 - [ ] **Step 2: Playwright**
 
 ```bash
-npm i -D @playwright/test
-npx playwright install chromium
+pnpm add -D @playwright/test
+pnpm exec playwright install chromium
 ```
 
 `playwright.config.ts`:
@@ -2440,7 +2440,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "e2e",
   use: { baseURL: "http://localhost:3000" },
-  webServer: { command: "npm run dev", url: "http://localhost:3000/login", reuseExistingServer: true },
+  webServer: { command: "pnpm dev", url: "http://localhost:3000/login", reuseExistingServer: true },
 });
 ```
 
@@ -2463,11 +2463,11 @@ test("đăng nhập → Hôm nay → tìm bài tập", async ({ page }) => {
 });
 ```
 
-Thêm script `package.json`: `"e2e": "playwright test"`. Lưu ý: Playwright cần env từ `.env` — chạy qua `npx dotenv -e .env -- playwright test` hoặc export thủ công; đơn giản nhất: thêm `import "dotenv/config"` không có sẵn — dùng cách chạy: `bash -c 'set -a; source .env; set +a; npx playwright test'`.
+Thêm script `package.json`: `"e2e": "playwright test"`. Lưu ý: Playwright cần env từ `.env` — chạy qua `pnpm dlx dotenv-cli -e .env -- playwright test` hoặc export thủ công; đơn giản nhất: thêm `import "dotenv/config"` không có sẵn — dùng cách chạy: `bash -c 'set -a; source .env; set +a; pnpm exec playwright test'`.
 
 - [ ] **Step 3: Chạy toàn bộ verify**
 
-Run: `npm test && npm run build && bash -c 'set -a; source .env; set +a; npx playwright test'`
+Run: `pnpm test && pnpm build && bash -c 'set -a; source .env; set +a; pnpm exec playwright test'`
 Expected: Vitest PASS, build PASS, e2e PASS.
 
 - [ ] **Step 4: Commit**
@@ -2484,5 +2484,5 @@ Deploy — cần người dùng thao tác tài khoản:
 1. Push repo lên GitHub, import vào Vercel.
 2. Tạo Neon project (nếu dev dùng Docker local) → lấy `DATABASE_URL` production.
 3. Set env trên Vercel: `DATABASE_URL`, `AUTH_SECRET` (mới, khác local), `APP_EMAIL`, `APP_PASSWORD`.
-4. `npx prisma migrate deploy` + `npx prisma db seed` trỏ vào DB production.
+4. `pnpm exec prisma migrate deploy` + `pnpm exec prisma db seed` trỏ vào DB production.
 5. Mở app trên điện thoại → "Thêm vào màn hình chính" (PWA).
