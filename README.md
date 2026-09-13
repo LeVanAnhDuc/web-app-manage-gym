@@ -89,10 +89,10 @@ APP_PASSWORD="its password"
 Then:
 
 ```bash
-npm i
-npx prisma migrate dev
-npx prisma db seed
-npm run dev
+pnpm install
+pnpm exec prisma migrate dev
+pnpm exec prisma db seed
+pnpm dev
 ```
 
 Open http://localhost:3000 and sign in with `APP_EMAIL` / `APP_PASSWORD`.
@@ -100,23 +100,24 @@ Open http://localhost:3000 and sign in with `APP_EMAIL` / `APP_PASSWORD`.
 Unit tests:
 
 ```bash
-npm test
+pnpm test
 ```
 
 End-to-end (Playwright needs the environment loaded, since sign-in reads it):
 
 ```bash
-bash -c 'set -a; source .env; set +a; npx playwright test'
+bash -c 'set -a; source .env; set +a; pnpm exec playwright test'
 ```
 
 ### Deploy (Vercel)
 
 1. Set `DATABASE_URL`, `AUTH_SECRET`, `APP_EMAIL` and `APP_PASSWORD` in the
    Vercel project settings.
-2. Run `npx prisma migrate deploy` to apply migrations to the production
+2. Run `pnpm exec prisma migrate deploy` to apply migrations to the production
    database.
-3. Run `npx prisma db seed` to seed the initial exercise catalogue.
-4. Deploy as a normal Next.js app — Vercel runs `npm run build` itself.
+3. Run `pnpm exec prisma db seed` to seed the initial exercise catalogue.
+4. Deploy as a normal Next.js app — Vercel detects `pnpm-lock.yaml` and runs
+   `pnpm build` itself.
 
 ## Project structure
 
